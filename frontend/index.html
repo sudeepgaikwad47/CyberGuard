@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CyberGuard is an enterprise-grade cybersecurity and risk management platform.">
+<meta property="og:title" content="CyberGuard — Security Risk Platform">
+<meta property="og:description" content="Enterprise cybersecurity risk management, automated vendor risk scoring, and ML-powered anomaly detection.">
+<meta name="theme-color" content="#07090f">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡</text></svg>">
+<title>CyberGuard — Security Risk Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="toastContainer"></div>
+
+<!-- LOGIN -->
+<div id="loginPage">
+  <div class="login-box">
+    <div class="login-logo"><div class="login-logo-icon">🛡</div><div class="login-logo-text">CYBER<span>GUARD</span></div></div>
+    <div class="login-title">Welcome back</div>
+    <div class="login-sub">Sign in to your security dashboard</div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="loginEmail" type="email" value="admin@company.com" placeholder="admin@company.com"></div>
+    <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="loginPass" type="password" value="password" placeholder="••••••••"></div>
+    <button class="btn-login" onclick="doLogin()">Sign In →</button>
+    <div class="login-error" id="loginError">Invalid credentials. Try again.</div>
+    <div class="login-hint">Demo: <span>admin@company.com</span> / <span>password</span></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-shield"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+    <div class="logo-name">CYBER<span>GUARD</span></div>
+    <div class="logo-version">v2.0</div>
+  </div>
+  <nav>
+    <div class="nav-group">
+      <div class="nav-label">Overview</div>
+      <div class="nav-item active" data-page="dashboard" data-label="Dashboard" onclick="goPage('dashboard',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></span> Dashboard</div>
+      <div class="nav-item" data-page="breachsight" data-label="BreachSight" onclick="goPage('breachsight',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span> BreachSight</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Risk Management</div>
+      <div class="nav-item" data-page="vendors" data-label="Vendor Risk" onclick="goPage('vendors',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M16 10h.01M8 10h.01M8 14h.01M12 14h.01M16 14h.01"></path></svg></span> Vendor Risk <span class="nav-badge" id="badge-vendors">0</span></div>
+      <div class="nav-item" data-page="questionnaires" data-label="Questionnaires" onclick="goPage('questionnaires',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> Questionnaires <span class="nav-badge blue" id="badge-q">0</span></div>
+      <div class="nav-item" data-page="alerts" data-label="Alerts" onclick="goPage('alerts',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></span> Alerts <span class="nav-badge" id="badge-alerts">0</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Threat Intel</div>
+      <div class="nav-item" data-page="leaks" data-label="Data Leaks" onclick="goPage('leaks',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg></span> Data Leaks <span class="nav-badge" id="badge-leaks">0</span></div>
+      <div class="nav-item" data-page="attack" data-label="Attack Surface" onclick="goPage('attack',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></span> Attack Surface</div>
+      <div class="nav-item" data-page="anomalies" data-label="ML Anomalies" onclick="goPage('anomalies',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1v4h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2v-4h1a7 7 0 0 1 7-7h1V5.73A2 2 0 1 1 12 2z"></path></svg></span> ML Anomalies <span class="nav-badge blue" id="badge-anomalies">0</span></div>
+      <div class="nav-item" data-page="insider" data-label="Insider Detection" onclick="goPage('insider',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="3"></circle><path d="M2 12h20M12 2a5 5 0 0 0-5 5H7a5 5 0 0 0 10 0h-2a5 5 0 0 0-5-5z"></path></svg></span> Insider Detection</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Compliance & Reports</div>
+      <div class="nav-item" data-page="compliance" data-label="Compliance" onclick="goPage('compliance',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></span> Compliance</div>
+      <div class="nav-item" data-page="reports" data-label="Reports" onclick="goPage('reports',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span> Reports</div>
+      <div class="nav-item" data-page="settings" data-label="Settings" onclick="goPage('settings',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span> Settings</div>
+    </div>
+    <div class="nav-group" id="adminNavGroup">
+      <div class="nav-label">Admin</div>
+      <div class="nav-item" data-page="admin" data-label="User Monitoring" onclick="goPage('admin',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></span> User Monitoring <span class="nav-badge" id="badge-online" style="background:var(--accent);color:#000;">0</span></div>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-pill">
+      <div class="user-av" id="userAv">AK</div>
+      <div><div class="user-name" id="userName">Alex Kumar</div><div class="user-role" id="userRole">Security Analyst</div></div>
+      <div class="user-logout" onclick="doLogout()" title="Sign out">⏻</div>
+    </div>
+  </div>
+</aside>
+
+<div class="main-right" id="mainRight">
+<!-- TOPBAR -->
+<div class="topbar" id="topbar">
+  <button class="sidebar-toggle" onclick="toggleSidebar()"><span id="toggleIcon">◀</span></button>
+  <div class="topbar-title" id="pageTitle">Security Dashboard</div>
+  <div class="topbar-right">
+    <div class="search-wrap"><span style="color:var(--text3)">🔍</span><input type="text" id="globalSearch" placeholder="Search vendors, alerts…"></div>
+    <div class="icon-btn" onclick="goPage('alerts',document.querySelector('[data-page=alerts]'))">🔔<span class="dot" id="alertDot">0</span></div>
+    <button class="btn btn-primary" onclick="openScanModal()">⚡ Run Scan</button>
+  </div>
+</div>
+
+<!-- PAGES -->
+<div id="pagesWrapper">
+
+<!-- DASHBOARD -->
+<div class="page" id="page-dashboard">
+  <div class="grid-4" style="margin-bottom:18px;">
+    <div class="stat-card" style="--accent-color:var(--accent)"><div class="stat-label">Security Score</div><div class="stat-val" id="dashScore">—</div><div class="stat-sub">Grade: <span id="dashGrade">—</span></div></div>
+    <div class="stat-card" style="--accent-color:var(--red)"><div class="stat-label">Open Risks</div><div class="stat-val" id="dashRisks">—</div><div class="stat-sub">Across all categories</div></div>
+    <div class="stat-card" style="--accent-color:var(--blue)"><div class="stat-label">Vendors Monitored</div><div class="stat-val" id="dashVendors">—</div></div>
+    <div class="stat-card" style="--accent-color:var(--warn)"><div class="stat-label">ML Anomalies</div><div class="stat-val" id="dashAnomalies">—</div><div class="stat-sub">Detected by AI</div></div>
+  </div>
+  <div class="grid-2" style="margin-bottom:18px;">
+    <div class="card card-pad">
+      <div style="display:flex;align-items:center;gap:24px;">
+        <div style="flex-shrink:0;text-align:center;">
+          <div class="ring-wrap">
+            <svg width="130" height="130" viewBox="0 0 130 130"><circle cx="65" cy="65" r="55" fill="none" stroke="var(--surf3)" stroke-width="10"/><circle id="ringArc" cx="65" cy="65" r="55" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="345.4" stroke-dashoffset="345.4" transform="rotate(-90 65 65)"/></svg>
+            <div class="ring-label"><span class="ring-val" id="ringVal">0</span><span class="ring-sub">/950</span></div>
+          </div>
+          <span class="chip chip-ok" id="ringGrade" style="margin-top:8px;display:inline-block;">B+</span>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:14px;">Score Trend (7 days)</div>
+          <div style="height:100px;"><canvas id="scoreTrendChart"></canvas></div>
+          <div style="font-size:11px;color:var(--text2);margin-top:8px;">Better than <strong style="color:var(--text);" id="industryPct">73%</strong> of companies in your industry</div>
+        </div>
+      </div>
+    </div>
+    <div class="card card-pad">
+      <div style="font-size:13px;font-weight:700;margin-bottom:14px;">Risk Distribution</div>
+      <div style="display:flex;align-items:center;gap:20px;">
+        <div style="width:130px;height:130px;flex-shrink:0;"><canvas id="riskDonutChart"></canvas></div>
+        <div style="flex:1;" id="riskLegend"></div>
+      </div>
+    </div>
+  </div>
+  <!-- ML Status -->
+  <div class="card card-pad" style="margin-bottom:18px;">
+    <div class="section-hd" style="margin-bottom:12px;">
+      <div class="section-title">🤖 ML Engine Status</div>
+      <span class="live-dot"></span><span style="font-size:12px;color:var(--accent);">Live</span>
+    </div>
+    <div class="grid-3" id="mlStatusGrid"></div>
+  </div>
+  <div class="grid-2" style="margin-bottom:18px;">
+    <div class="card card-pad">
+      <div class="section-hd" style="margin-bottom:12px;"><div class="section-title">Recent Alerts</div><button class="btn btn-ghost btn-sm" onclick="goPage('alerts',document.querySelector('[data-page=alerts]'))">View all</button></div>
+      <div id="dashAlertsList" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+    <div class="card card-pad">
+      <div class="section-hd" style="margin-bottom:12px;">
+        <div class="section-title">Quick Domain Scan</div>
+        <div id="scanningBadge" style="display:none;font-size:12px;color:var(--accent);"><span class="live-dot"></span>Scanning…</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:12px;">
+        <input class="inp" id="quickDomain" placeholder="Enter domain (e.g. example.com, site.net, site.in)">
+        <button class="btn btn-primary" onclick="quickScan()">⚡ Scan</button>
+      </div>
+      <div id="quickScanResult" style="display:none;"></div>
+    </div>
+  </div>
+  <!-- Demo Attack Simulator -->
+  <div class="card card-pad">
+    <div class="section-hd" style="margin-bottom:12px;">
+      <div class="section-title">🎭 Demo: Simulate Cyber Attack</div>
+      <span style="font-size:11px;color:var(--text3);">For college demonstration</span>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-danger" onclick="simulateAttack('brute_force')">🔒 Brute Force</button>
+      <button class="btn btn-danger" onclick="simulateAttack('data_exfiltration')">📤 Data Exfiltration</button>
+      <button class="btn btn-danger" onclick="simulateAttack('insider_threat')">👤 Insider Threat</button>
+      <button class="btn btn-danger" onclick="simulateAttack('credential_stuffing')">🔑 Credential Stuffing</button>
+      <button class="btn btn-ghost" onclick="classifyThreat()">🤖 ML Classify Text</button>
+    </div>
+  </div>
+</div>
+
+<!-- VENDORS -->
+<div class="page page-hidden" id="page-vendors">
+  <div class="section-hd" style="margin-bottom:16px;">
+    <div><div class="section-title">Vendor Risk Management</div><div style="font-size:12px;color:var(--text2);margin-top:2px;" id="vendorCount">Loading…</div></div>
+    <div style="display:flex;gap:8px;">
+      <input class="inp" id="vendorSearch" placeholder="🔍 Search…" style="width:180px;" oninput="renderVendors()">
+      <select class="inp" id="vendorRiskFilter" onchange="renderVendors()" style="width:140px;"><option value="">All risks</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+      <button class="btn btn-ghost btn-sm" onclick="rescanAllVendors()">🔄 Rescan All</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportVendors()">⬇ CSV</button>
+      <button class="btn btn-primary" onclick="openVendorModal()">+ Add Vendor</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="tbl-wrap"><table><thead><tr><th>Vendor</th><th>Score</th><th>Risk (Rule)</th><th>ML Risk</th><th>Category</th><th>Issues</th><th>Status</th><th>Last Scanned</th><th>Actions</th></tr></thead><tbody id="vendorTableBody"><tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text3);"><div class="spinner"></div></td></tr></tbody></table></div>
+  </div>
+</div>
+
+<!-- ALERTS -->
+<div class="page page-hidden" id="page-alerts">
+  <div class="section-hd" style="margin-bottom:16px;">
+    <div class="section-title">Alerts & Notifications</div>
+    <div style="display:flex;gap:8px;">
+      <select class="inp btn-sm" id="alertSevFilter" onchange="renderAlerts()" style="width:150px;"><option value="">All severities</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+      <select class="inp btn-sm" id="alertStatusFilter" onchange="renderAlerts()" style="width:130px;"><option value="">All statuses</option><option value="open">Open</option><option value="acknowledged">Acknowledged</option><option value="resolved">Resolved</option></select>
+      <button class="btn btn-ghost btn-sm" onclick="bulkAcknowledge()">✓ Ack All</button>
+      <button class="btn btn-primary btn-sm" onclick="openAlertModal()">+ New Alert</button>
+    </div>
+  </div>
+  <div id="alertsList" style="display:flex;flex-direction:column;gap:8px;"></div>
+</div>
+
+<!-- LEAKS -->
+<div class="page page-hidden" id="page-leaks">
+  <div class="section-hd" style="margin-bottom:16px;">
+    <div><div class="section-title">Data Leak Detection</div></div>
+    <div style="display:flex;gap:8px;"><button class="btn btn-ghost btn-sm" onclick="refreshLeaks()">🔄 Refresh</button><button class="btn btn-primary btn-sm" onclick="openLeakModal()">+ Add Leak</button></div>
+  </div>
+  <div class="grid-3" style="margin-bottom:18px;">
+    <div class="stat-card" style="--accent-color:var(--red)"><div class="stat-label">Active Leaks</div><div class="stat-val" id="activeLeaks">—</div></div>
+    <div class="stat-card" style="--accent-color:var(--warn)"><div class="stat-label">Credentials Exposed</div><div class="stat-val" id="credExposed">—</div></div>
+    <div class="stat-card" style="--accent-color:var(--blue)"><div class="stat-label">Under Investigation</div><div class="stat-val" id="underInv">—</div></div>
+  </div>
+  <div id="leaksList" style="display:flex;flex-direction:column;gap:10px;"></div>
+</div>
+
+<!-- ANOMALIES (ML) -->
+<div class="page page-hidden" id="page-anomalies">
+  <div class="section-hd" style="margin-bottom:16px;">
+    <div><div class="section-title">🤖 ML Anomaly Detection</div><div style="font-size:12px;color:var(--text2);">Powered by Isolation Forest</div></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost btn-sm" onclick="retrainModel()">🔄 Retrain Model</button>
+      <button class="btn btn-primary btn-sm" onclick="refreshAnomalies()">↻ Refresh</button>
+    </div>
+  </div>
+  <div class="grid-3" style="margin-bottom:18px;">
+    <div class="stat-card" style="--accent-color:var(--purple)"><div class="stat-label">Total Anomalies</div><div class="stat-val" id="totalAnomalies">—</div></div>
+    <div class="stat-card" style="--accent-color:var(--red)"><div class="stat-label">High Confidence</div><div class="stat-val" id="highConfAnomalies">—</div></div>
+    <div class="stat-card" style="--accent-color:var(--blue)"><div class="stat-label">Alerts Auto-Created</div><div class="stat-val" id="mlAlerts">—</div></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><div class="card-title">Anomalous Activity Log</div></div>
+    <div class="tbl-wrap"><table><thead><tr><th>User</th><th>Action</th><th>IP</th><th>Anomaly Score</th><th>Timestamp</th></tr></thead><tbody id="anomaliesTable"></tbody></table></div>
+  </div>
+</div>
+
+<!-- QUESTIONNAIRES -->
+<div class="page page-hidden" id="page-questionnaires">
+  <div class="section-hd" style="margin-bottom:16px;"><div class="section-title">Security Questionnaires</div><button class="btn btn-primary" onclick="openQModal()">+ New</button></div>
+  <div class="tabs"><div class="tab active" onclick="filterQ('',this)">All</div><div class="tab" onclick="filterQ('in_progress',this)">In Progress</div><div class="tab" onclick="filterQ('completed',this)">Completed</div><div class="tab" onclick="filterQ('pending',this)">Pending</div></div>
+  <div id="qList"></div>
+</div>
+
+<!-- BREACHSIGHT -->
+<div class="page page-hidden" id="page-breachsight">
+  <div class="section-hd" style="margin-bottom:16px;"><div class="section-title">BreachSight — Attack Surface</div></div>
+  <div class="grid-4" style="margin-bottom:18px;">
+    <div class="stat-card" style="--accent-color:var(--accent)"><div class="stat-label">Monitored Domains</div><div class="stat-val">23</div></div>
+    <div class="stat-card" style="--accent-color:var(--blue)"><div class="stat-label">IP Addresses</div><div class="stat-val">142</div></div>
+    <div class="stat-card" style="--accent-color:var(--red)"><div class="stat-label">Exposed Services</div><div class="stat-val">8</div></div>
+    <div class="stat-card" style="--accent-color:var(--warn)"><div class="stat-label">Expiring SSL Certs</div><div class="stat-val">2</div></div>
+  </div>
+  <div class="card card-pad">
+    <div class="section-hd" style="margin-bottom:12px;"><div class="section-title">Scan a Domain (Real Check)</div></div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;">
+      <input class="inp" id="bsDomainInput" placeholder="domain.com, site.net, site.in">
+      <button class="btn btn-primary" onclick="bsFullScan()">🔍 Full Scan</button>
+    </div>
+    <div id="bsScanResult"></div>
+  </div>
+</div>
+
+<!-- ATTACK SURFACE -->
+<div class="page page-hidden" id="page-attack">
+  <div class="grid-3" style="margin-bottom:18px;">
+    <div class="stat-card" style="--accent-color:var(--red)" onclick="filterAttackSurface('critical')"><div class="stat-label">Open Ports (High Risk)</div><div class="stat-val">8</div><div style="font-size:10px;color:var(--text3);margin-top:4px;">Click to filter Critical</div></div>
+    <div class="stat-card" style="--accent-color:var(--blue)" onclick="filterAttackSurface('medium')"><div class="stat-label">Subdomains</div><div class="stat-val">67</div><div style="font-size:10px;color:var(--text3);margin-top:4px;">Click to filter Medium</div></div>
+    <div class="stat-card" style="--accent-color:var(--warn)" onclick="filterAttackSurface('high')"><div class="stat-label">CVEs Identified</div><div class="stat-val">14</div><div style="font-size:10px;color:var(--text3);margin-top:4px;">Click to filter High</div></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><div class="card-title">Attack Surface Map</div><button class="btn btn-ghost btn-sm" onclick="exportAttack()">⬇ Export</button></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Asset</th><th>Risk</th><th>Issue</th><th>Port/Service</th><th>CVE</th><th>Remediation</th></tr></thead>
+    <tbody id="attackTable"></tbody></table></div>
+  </div>
+</div>
+
+<!-- INSIDER THREAT DETECTION (Nasir et al. IEEE ACCESS 2021) -->
+<div class="page page-hidden" id="page-insider">
+  <div class="section-hd" style="margin-bottom:8px;">
+    <div>
+      <div class="section-title">🕵️ Insider Threat Detection</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:2px;">Behavioral analysis powered by LSTM-Autoencoder model — <i>Nasir et al. IEEE ACCESS 2021</i></div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost btn-sm" onclick="loadInsider()">↻ Refresh Analysis</button>
+    </div>
+  </div>
+
+  <!-- Performance Metrics (Paper Section V) -->
+  <div class="grid-4" style="margin-bottom:18px;" id="insiderMetricsGrid">
+    <div class="stat-card" style="--accent-color:var(--accent)"><div class="stat-label">Model Accuracy</div><div class="stat-val" id="insiderAccuracy">—</div></div>
+    <div class="stat-card" style="--accent-color:var(--purple)"><div class="stat-label">Precision</div><div class="stat-val" id="insiderPrecision">—</div></div>
+    <div class="stat-card" style="--accent-color:var(--blue)"><div class="stat-label">F1 Score</div><div class="stat-val" id="insiderF1">—</div></div>
+    <div class="stat-card" style="--accent-color:var(--red)"><div class="stat-label">False Positive Rate</div><div class="stat-val" id="insiderFPR">—</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:18px;">
+    <!-- Reconstruction Error Chart (Paper Figure 8) -->
+    <div class="card card-pad">
+      <div class="card-title" style="margin-bottom:12px;">📊 Reconstruction Error per User</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="font-size:11px;color:var(--text2);">Threshold line at 0.65 — users above are classified as potential insiders</div>
+        <div style="display:flex;gap:6px;font-size:11px;">
+          <button class="btn" style="padding:4px 10px;background:var(--accent);color:#000;" id="btnScatterView" onclick="toggleReconView('scatter')">Scatter Plot</button>
+          <button class="btn" style="padding:4px 10px;background:var(--bg3);color:var(--text2);" id="btnBarView" onclick="toggleReconView('bar')">Bar Graph</button>
+        </div>
+      </div>
+      <div style="height:260px;position:relative;width:100%;" id="reconChartWrap">
+        <div id="reconScatterContainer" style="position:absolute;top:0;left:0;height:100%;width:100%;transition:opacity 0.2s;"><canvas id="reconChart"></canvas></div>
+        <div id="reconBarContainer" style="position:absolute;top:0;left:0;height:100%;width:100%;visibility:hidden;opacity:0;transition:opacity 0.2s;"><canvas id="reconBarChart"></canvas></div>
+      </div>
+    </div>
+    <!-- Confusion Matrix (Paper Figure 9) -->
+    <div class="card card-pad">
+      <div class="card-title" style="margin-bottom:12px;">🔲 Confusion Matrix</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:14px;">Model classification results — Normal vs Insider</div>
+      <div id="confusionMatrix" style="display:grid;grid-template-columns:auto 1fr 1fr;gap:0;max-width:320px;margin:0 auto;"></div>
+      <div style="margin-top:16px;display:flex;gap:20px;justify-content:center;font-size:11px;color:var(--text2);">
+        <div><span style="color:var(--accent);font-weight:700;">Recall: </span><span id="insiderRecall">—</span></div>
+        <div><span style="color:var(--purple);font-weight:700;">Threshold: </span><span id="insiderThreshold">0.65</span></div>
+        <div><span style="color:var(--warn);font-weight:700;">Users Analyzed: </span><span id="insiderTotalUsers">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Algorithm Result Comparison Benchmarks -->
+  <div class="card" style="margin-bottom:18px;">
+    <div class="card-head">
+      <div class="card-title">📈 Algorithm Result Comparison</div>
+      <button class="btn btn-ghost btn-sm" onclick="loadBenchmarks()">↻ Load Benchmarks</button>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Accuracy</th>
+            <th>Precision</th>
+            <th>Recall (Sensitivity)</th>
+            <th>F1 Score</th>
+          </tr>
+        </thead>
+        <tbody id="insiderBenchmarksTable">
+          <tr><td colspan="5" class="text-center" style="padding:16px;">Click 'Load Benchmarks' to evaluate historical algorithm benchmarks.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Charts: Performance Evaluation + Result Comparison (Paper Figures 10 & 11) -->
+  <div class="grid-2" style="margin-bottom:18px;display:none;" id="benchmarkChartsRow">
+    <div class="card card-pad">
+      <div class="card-title" style="margin-bottom:4px;">📊 Performance Evaluation</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:12px;">Platform model — Accuracy, Precision, Recall, F1Score, FPR</div>
+      <div style="height:230px;position:relative;"><canvas id="perfEvalChart"></canvas></div>
+    </div>
+    <div class="card card-pad">
+      <div class="card-title" style="margin-bottom:4px;">📈 Result Comparison</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:12px;">All algorithms — Accuracy · Precision · F1-Score · Recall</div>
+      <div style="height:230px;position:relative;"><canvas id="resultCompChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Insider Scenarios (Paper Section III.B) -->
+  <div class="card" style="margin-bottom:18px;">
+    <div class="card-head"><div class="card-title">⚠️ Detected Insider Scenarios</div></div>
+    <div id="insiderScenarios" style="padding:16px;"><div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">Run analysis to detect scenarios</div></div></div>
+  </div>
+
+  <!-- User Behavioral Profiling -->
+  <div class="card">
+    <div class="card-head"><div class="card-title">👤 User Behavioral Profiles</div><div style="font-size:11px;color:var(--text2);">Sorted by reconstruction error (highest risk first)</div></div>
+    <div class="tbl-wrap"><table><thead><tr>
+      <th>User</th><th>Risk Level</th><th>Recon. Error</th><th>After Hours</th><th>Export Rate</th><th>Total Logs</th><th>Anomalies</th><th>Scenarios</th><th>Actions</th>
+    </tr></thead>
+    <tbody id="insiderUsersTable"></tbody></table></div>
+  </div>
+
+  <!-- Feature Encoding Reference (Paper Table 3 & 4) -->
+  <div class="card card-pad" style="margin-top:18px;">
+    <div class="card-title" style="margin-bottom:10px;">📐 Feature Encoding Reference (Nasir et al.)</div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:12px;">Feature vector structure used for behavioral analysis — based on CMU CERT r4.2 methodology</div>
+    <div class="grid-3">
+      <div style="background:var(--surf2);border-radius:8px;padding:12px;border:1px solid var(--border);">
+        <div style="font-weight:700;font-size:12px;color:var(--accent);margin-bottom:6px;">Activity Labels</div>
+        <div style="font-family:var(--mono);font-size:10px;line-height:1.8;color:var(--text2);">
+          0=login, 1=logout, 2=view_dashboard<br>3=export_report, 4=add_vendor<br>5=delete_vendor, 6=delete_alert<br>7=scan_domain, 8=access_settings<br>9=view_vendor, 10=update_alert<br>11=download_report
+        </div>
+      </div>
+      <div style="background:var(--surf2);border-radius:8px;padding:12px;border:1px solid var(--border);">
+        <div style="font-weight:700;font-size:12px;color:var(--purple);margin-bottom:6px;">Day Encoding</div>
+        <div style="font-family:var(--mono);font-size:10px;line-height:1.8;color:var(--text2);">
+          0=Monday, 1=Tuesday<br>2=Wednesday, 3=Thursday<br>4=Friday, 5=Saturday<br>6=Sunday
+        </div>
+        <div style="font-weight:700;font-size:12px;color:var(--warn);margin-bottom:6px;margin-top:10px;">Time Windows</div>
+        <div style="font-family:var(--mono);font-size:10px;line-height:1.8;color:var(--text2);">
+          Normal: 06:00-20:00<br>After-hours: 20:01-05:59
+        </div>
+      </div>
+      <div style="background:var(--surf2);border-radius:8px;padding:12px;border:1px solid var(--border);">
+        <div style="font-weight:700;font-size:12px;color:var(--red);margin-bottom:6px;">Threat Scenarios</div>
+        <div style="font-size:10px;line-height:1.8;color:var(--text2);">
+          <b>S1:</b> After-hours login + data export<br>
+          <b>S2:</b> Privilege escalation attempts<br>
+          <b>S3:</b> Reconnaissance + scanning<br>
+          <span style="color:var(--accent);margin-top:4px;display:block;">Threshold: Recon Error ≥ 0.65</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLIANCE -->
+<div class="page page-hidden" id="page-compliance">
+  <div class="section-hd" style="margin-bottom:18px;"><div class="section-title">Compliance Frameworks</div><button class="btn btn-primary btn-sm" onclick="genComplianceReport()">📄 Generate Report</button></div>
+  <div class="grid-2" style="margin-bottom:18px;" id="complianceGrid"></div>
+  <div class="card card-pad"><div class="section-title" style="margin-bottom:14px;">Compliance Trend</div><div style="height:200px;"><canvas id="complianceChart"></canvas></div></div>
+</div>
+
+<!-- REPORTS -->
+<div class="page page-hidden" id="page-reports">
+  <div class="section-hd" style="margin-bottom:16px;"><div class="section-title">Reports</div><button class="btn btn-primary" onclick="openGenReportModal()">+ Generate</button></div>
+  <div class="card"><div class="card-head"><div class="card-title">Report History</div></div><div id="reportList"></div></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page page-hidden" id="page-admin">
+  <div class="section-header">
+    <div><div class="section-title">👁️ User Monitoring</div><div class="section-sub">Real-time tracking of all users on your network</div></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary btn-sm" onclick="refreshAdmin()">↻ Refresh</button>
+      <button class="btn btn-ghost btn-sm" onclick="openModal('addUserModal')">+ Add User</button>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="metrics-grid" style="margin-bottom:20px;">
+    <div class="metric-card"><div class="metric-value" id="adminTotalUsers">0</div><div class="metric-label">Total Users</div></div>
+    <div class="metric-card"><div class="metric-value" style="color:var(--accent)" id="adminOnline">0</div><div class="metric-label">Online Now</div></div>
+    <div class="metric-card"><div class="metric-value" id="adminTodayLogs">0</div><div class="metric-label">Actions Today</div></div>
+    <div class="metric-card"><div class="metric-value" style="color:var(--red)" id="adminAnomalies">0</div><div class="metric-label">Total Anomalies</div></div>
+  </div>
+
+  <!-- Users table -->
+  <div class="card" style="margin-bottom:20px;">
+    <div style="padding:16px 20px;border-bottom:1px solid var(--border);font-weight:700;font-size:13px;">All Users</div>
+    <div style="overflow-x:auto;">
+      <table class="data-table" style="min-width:700px;">
+        <thead><tr>
+          <th>User</th><th>Role</th><th>Last Action</th><th>Active Window / Site</th>
+          <th>IP Address</th><th>Device</th><th>Last Seen</th><th>Tracking Key</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="adminUsersTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Live activity feed -->
+  <div class="card">
+    <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-weight:700;font-size:13px;">Live Activity Feed</div>
+      <div id="liveDot" style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--accent);">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite;display:inline-block;"></span> Live
+      </div>
+    </div>
+    <div id="adminFeed" style="max-height:400px;overflow-y:auto;padding:8px;"></div>
+  </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal-overlay" id="addUserModal" style="display:none;" onclick="closeBg(event,'addUserModal')">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-header"><div class="modal-title">Add New User</div><button class="modal-close" onclick="closeModal('addUserModal')">✕</button></div>
+    <div style="padding:20px;display:flex;flex-direction:column;gap:12px;">
+      <input class="form-input" id="nu-name" placeholder="Full Name">
+      <input class="form-input" id="nu-email" placeholder="Email" type="email">
+      <input class="form-input" id="nu-pass" placeholder="Password" type="password" value="password123">
+      <input class="form-input" id="nu-role" placeholder="Role (e.g. IT Analyst)">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
+        <input type="checkbox" id="nu-admin"> Make Admin
+      </label>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('addUserModal')">Cancel</button><button class="btn btn-primary" onclick="createUser()">Create User</button></div>
+  </div>
+</div>
+
+<div class="page page-hidden" id="page-settings">
+  <div class="section-hd" style="margin-bottom:24px;"><div class="section-title">Settings</div><button class="btn btn-primary" onclick="saveSettings()">💾 Save</button></div>
+  <div class="grid-2">
+    <div>
+      <div class="settings-section"><div class="settings-title">Organization</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div><label class="lbl">Company Name</label><input class="inp" id="set-company"></div>
+          <div><label class="lbl">Primary Domain</label><input class="inp" id="set-domain"></div>
+          <div><label class="lbl">Industry</label><select class="inp" id="set-industry"><option>Technology</option><option>Financial Services</option><option>Healthcare</option><option>Retail</option></select></div>
+        </div>
+      </div>
+      <div class="settings-section"><div class="settings-title">Account</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div><label class="lbl">Full Name</label><input class="inp" id="set-name"></div>
+          <div><label class="lbl">Email</label><input class="inp" id="set-email"></div>
+          <div><label class="lbl">Role</label><select class="inp" id="set-role"><option>Security Analyst</option><option>CISO</option><option>IT Manager</option></select></div>
+          <div><label class="lbl">New Password</label><input class="inp" type="password" id="set-password" placeholder="Leave blank to keep current"></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="settings-section"><div class="settings-title">Notifications</div>
+        <div class="settings-row"><div><div style="font-weight:600;">Critical Alerts</div><div style="font-size:12px;color:var(--text2);">Immediate notification</div></div><label class="toggle"><input type="checkbox" id="notif-critical" checked><span class="toggle-slider"></span></label></div>
+        <div class="settings-row"><div><div style="font-weight:600;">Data Leaks</div><div style="font-size:12px;color:var(--text2);">Instant alert on new leaks</div></div><label class="toggle"><input type="checkbox" id="notif-leaks" checked><span class="toggle-slider"></span></label></div>
+        <div class="settings-row"><div><div style="font-weight:600;">ML Anomalies</div><div style="font-size:12px;color:var(--text2);">Alert when ML detects threats</div></div><label class="toggle"><input type="checkbox" id="notif-ml" checked><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="settings-section"><div class="settings-title">ML Engine</div>
+        <div class="settings-row"><div><div style="font-weight:600;">Auto-retrain</div><div style="font-size:12px;color:var(--text2);">Retrain models weekly</div></div><label class="toggle"><input type="checkbox" id="ml-autotrain" checked><span class="toggle-slider"></span></label></div>
+        <div class="settings-row"><div><div style="font-weight:600;">Auto-scan vendors</div><div style="font-size:12px;color:var(--text2);">Weekly ML risk scoring</div></div><label class="toggle"><input type="checkbox" id="ml-vendorscan" checked><span class="toggle-slider"></span></label></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- pagesWrapper -->
+</div><!-- main-right -->
+</div><!-- layout -->
+</div><!-- app -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="vendorModal" style="display:none;" onclick="closeBg(event,'vendorModal')">
+  <div class="modal"><div class="modal-head"><div class="modal-title" id="vendorModalTitle">Add Vendor</div><div class="modal-close" onclick="closeModal('vendorModal')">×</div></div>
+  <div class="modal-body">
+    <input type="hidden" id="vendorEditId">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div><label class="lbl">Company Name*</label><input class="inp" id="v-name"></div>
+      <div><label class="lbl">Domain*</label><input class="inp" id="v-domain" placeholder="example.com"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div><label class="lbl">Category</label><select class="inp" id="v-cat"><option>Cloud Infrastructure</option><option>SaaS</option><option>Payment Processing</option><option>HR Software</option><option>CRM</option><option>Communication</option><option>Security</option><option>Other</option></select></div>
+      <div><label class="lbl">Criticality</label><select class="inp" id="v-crit"><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select></div>
+    </div>
+    <div style="margin-bottom:12px;"><label class="lbl">Contact Email</label><input class="inp" id="v-contact" placeholder="security@vendor.com"></div>
+    <div><label class="lbl">Notes</label><textarea class="inp" id="v-notes"></textarea></div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('vendorModal')">Cancel</button><button class="btn btn-primary" onclick="saveVendor()">Save Vendor</button></div></div>
+</div>
+
+<div class="modal-overlay" id="alertModal" style="display:none;" onclick="closeBg(event,'alertModal')">
+  <div class="modal"><div class="modal-head"><div class="modal-title">Create Alert</div><div class="modal-close" onclick="closeModal('alertModal')">×</div></div>
+  <div class="modal-body">
+    <div style="margin-bottom:12px;"><label class="lbl">Title*</label><input class="inp" id="al-title"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div><label class="lbl">Severity</label><select class="inp" id="al-sev"><option value="critical">Critical</option><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select></div>
+      <div><label class="lbl">Category</label><select class="inp" id="al-cat"><option>Website Security</option><option>Email Security</option><option>Network</option><option>Vendor Risk</option><option>Data Leak</option><option>Compliance</option><option>Other</option></select></div>
+    </div>
+    <div><label class="lbl">Description</label><textarea class="inp" id="al-desc"></textarea></div>
+    <div id="mlClassResult" style="display:none;margin-top:12px;padding:10px;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);border-radius:6px;font-size:12px;"></div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('alertModal')">Cancel</button><button class="btn btn-blue btn-sm" onclick="mlClassifyAlert()">🤖 ML Classify</button><button class="btn btn-primary" onclick="saveAlert()">Create Alert</button></div></div>
+</div>
+
+<div class="modal-overlay" id="leakModal" style="display:none;" onclick="closeBg(event,'leakModal')">
+  <div class="modal"><div class="modal-head"><div class="modal-title">Add Data Leak</div><div class="modal-close" onclick="closeModal('leakModal')">×</div></div>
+  <div class="modal-body">
+    <div style="margin-bottom:12px;"><label class="lbl">Title*</label><input class="inp" id="lk-title"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div><label class="lbl">Severity</label><select class="inp" id="lk-sev"><option value="critical">Critical</option><option value="high" selected>High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
+      <div><label class="lbl">Source</label><select class="inp" id="lk-src"><option>Dark Web</option><option>Paste Site</option><option>Breach Database</option><option>Code Repository</option><option>Other</option></select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div><label class="lbl">Credentials Exposed</label><input class="inp" type="number" id="lk-creds" value="0"></div>
+      <div><label class="lbl">Records Exposed</label><input class="inp" type="number" id="lk-recs" value="0"></div>
+    </div>
+    <div><label class="lbl">Details</label><textarea class="inp" id="lk-details"></textarea></div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('leakModal')">Cancel</button><button class="btn btn-primary" onclick="saveLeak()">Add Leak</button></div></div>
+</div>
+
+<div class="modal-overlay" id="qModal" style="display:none;" onclick="closeBg(event,'qModal')">
+  <div class="modal"><div class="modal-head"><div class="modal-title" id="qModalTitle">New Questionnaire</div><div class="modal-close" onclick="closeModal('qModal')">×</div></div>
+  <div class="modal-body">
+    <input type="hidden" id="qEditId">
+    <div style="margin-bottom:12px;"><label class="lbl">Title*</label><input class="inp" id="q-title"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div><label class="lbl">Framework</label><select class="inp" id="q-fw"><option>SOC 2</option><option>ISO 27001</option><option>GDPR</option><option>NIST CSF</option><option>PCI DSS</option><option>HIPAA</option><option>Custom</option></select></div>
+      <div><label class="lbl">Vendor</label><select class="inp" id="q-vendor"><option value="">Internal</option></select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div><label class="lbl">Due Date</label><input class="inp" type="date" id="q-due"></div>
+      <div><label class="lbl">Total Questions</label><input class="inp" type="number" id="q-total" value="20"></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('qModal')">Cancel</button><button class="btn btn-primary" onclick="saveQ()">Save</button></div></div>
+</div>
+
+<div class="modal-overlay" id="scanModal" style="display:none;" onclick="closeBg(event,'scanModal')">
+  <div class="modal" style="max-width:480px;"><div class="modal-head"><div class="modal-title">Run Security Scan</div><div class="modal-close" onclick="closeModal('scanModal')">×</div></div>
+  <div class="modal-body">
+    <div style="margin-bottom:12px;"><label class="lbl">Target Domain</label><input class="inp" id="scan-domain" placeholder="example.com, site.net, site.in"></div>
+    <div style="margin-bottom:12px;"><label class="lbl">Scan Type</label><select class="inp" id="scan-type"><option value="quick">Quick Scan</option><option value="deep">Deep Scan</option></select></div>
+    <div id="scanProgress" style="display:none;">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px;" id="scanStatusText">Initializing…</div>
+      <div class="prog-wrap"><div class="prog-fill" id="scanBar" style="width:0%;background:var(--accent);"></div></div>
+      <div id="scanLog" style="margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--text2);max-height:120px;overflow-y:auto;line-height:1.8;"></div>
+    </div>
+    <div id="scanDone" style="display:none;"></div>
+  </div>
+  <div class="modal-footer" id="scanModalFooter"><button class="btn btn-ghost" onclick="closeModal('scanModal')">Cancel</button><button class="btn btn-primary" onclick="startScan()">Start Scan</button></div></div>
+</div>
+
+<div class="modal-overlay" id="reportGenModal" style="display:none;" onclick="closeBg(event,'reportGenModal')">
+  <div class="modal" style="max-width:420px;"><div class="modal-head"><div class="modal-title">Generate Report</div><div class="modal-close" onclick="closeModal('reportGenModal')">×</div></div>
+  <div class="modal-body"><label class="lbl">Report Type</label><select class="inp" id="reportType" style="margin-bottom:14px;"><option value="security-posture">Security Posture</option><option value="vendor-risk">Vendor Risk</option><option value="compliance">Compliance</option><option value="incident">Incident & Threat</option><option value="executive-summary">Executive Summary</option></select></div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('reportGenModal')">Cancel</button><button class="btn btn-primary" onclick="generateReport()">Generate</button></div></div>
+</div>
+
+<div class="modal-overlay" id="classifyModal" style="display:none;" onclick="closeBg(event,'classifyModal')">
+  <div class="modal" style="max-width:480px;"><div class="modal-head"><div class="modal-title">🤖 ML Threat Classifier</div><div class="modal-close" onclick="closeModal('classifyModal')">×</div></div>
+  <div class="modal-body">
+    <label class="lbl">Enter text to classify</label>
+    <textarea class="inp" id="classifyText" placeholder="e.g. 'multiple failed login attempts from unusual IP at 3am'" style="margin-bottom:12px;height:100px;"></textarea>
+    <div id="classifyResult" style="display:none;"></div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('classifyModal')">Close</button><button class="btn btn-primary" onclick="runClassify()">🤖 Classify</button></div></div>
+</div>
+
+<script src="js/config.js?v=2.1"></script>
+<script src="js/helpers.js?v=2.1"></script>
+<script src="js/auth.js?v=2.1"></script>
+<script src="js/sidebar.js?v=2.3"></script>
+<script src="js/dashboard.js?v=2.1"></script>
+<script src="js/vendors.js?v=2.1"></script>
+<script src="js/alerts.js?v=2.1"></script>
+<script src="js/leaks.js?v=2.1"></script>
+<script src="js/anomalies.js?v=2.1"></script>
+<script src="js/attack.js?v=2.1"></script>
+<script src="js/questionnaires.js?v=2.1"></script>
+<script src="js/compliance.js?v=2.1"></script>
+<script src="js/scan.js?v=2.1"></script>
+<script src="js/reports.js?v=2.1"></script>
+<script src="js/settings.js?v=2.1"></script>
+<script src="js/admin.js?v=2.2"></script>
+<script src="js/insider.js?v=2.1"></script>
+<script src="js/main.js?v=2.1"></script>
+</body>
+</html>
+
